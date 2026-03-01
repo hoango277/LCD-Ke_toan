@@ -1,0 +1,16 @@
+| STT | Họ và Tên | Text 1: Cụm từ ngắn | Text 2: Thần thái & Tính cách | Text 3: Sự tận tâm & Chuyên nghiệp |
+|---:|---|---|---|---|
+| 1 | Cô Đặng Thị Việt Đức | Nhiệt huyết bền bỉ | Sự điềm đạm và cốt cách thanh cao của một người dẫn dắt đầy bản lĩnh. | Tận tâm chèo lái con thuyền Tài chính - Kế toán 1 bằng cả trí tuệ và sự nhẹ nhàng thấu hiểu. |
+| 2 | Cô Lê Thị Ngọc Phương | Nhiệt tình truyền lửa | Năng động và luôn tràn đầy năng lượng tích cực trong từng nhịp sống của Khoa. | Người thắp lửa nhiệt huyết, luôn biết cách khơi gợi sự hứng thú và sáng tạo trong mỗi sinh viên. |
+| 3 | Cô Nguyễn Thị Chinh Lam | Dịu dàng nhưng bản lĩnh | Sự dịu dàng mang đến cảm giác bình yên cho mọi người xung quanh. | Như người mẹ thứ hai, luôn vỗ về và dìu dắt chúng em bằng tình yêu thương bao la |
+| 4 | Cô Nguyễn Thị Việt Lê | Âm thầm gieo ấm áp | Nụ cười rạng rỡ luôn thường trực, mang đến sự ấm áp và niềm vui cho mọi tiết học. | Hết mình vì sinh viên, cô là nguồn động viên lớn lao trên con đường chinh phục tri thức của chúng em. |
+| 5 | Cô Lê Thị Ánh | Kỉ luật từ yêu thương | Sự nghiêm túc và chuẩn mực trong từng bài giảng, rèn giũa bản lĩnh vững vàng cho sinh viên. | Đằng sau sự nghiêm khắc là tấm lòng tận tụy, luôn đặt tương lai của sinh viên lên vị trí ưu tiên hàng đầu. |
+| 6 | Cô Nguyễn Thị Vân Anh | Hài hước nhưng đầy ý nghĩa | Sự hài hước và tinh thần vui vẻ luôn biến mỗi tiết học thành không gian thư giãn tuyệt vời. | Cô khiến mọi áp lực tan biến, giúp chúng em tiếp thu kiến thức một cách tự nhiên và thoải mái nhất. |
+| 7 | Cô Trần Thị Thanh Thúy | Dịu dàng mà thấu hiểu | Nhẹ nhàng và sâu sắc, cô luôn là nơi tin cậy để sinh viên tìm thấy sự đồng điệu. | Sự ân cần lắng nghe của cô đã tiếp thêm sức mạnh cho chúng em vượt qua mọi bỡ ngỡ thời sinh viên. |
+| 8 | Cô Phạm Thị Thu Phương | Đằm thắm dịu dàng | Vẻ đẹp nhẹ nhàng cùng sự ân cần luôn hiện hữu trong từng cử chỉ nhỏ nhất. | Nhiệt tình hỗ trợ và quan tâm chu đáo, cô là minh chứng rõ nét cho sự tận tâm đáng quý với nghề. |
+| 9 | Cô Trần Phương Linh | Chu đáo trong mọi việc | Tinh thần nhiệt huyết và sự sẵn lòng giúp đỡ sinh viên mọi lúc, mọi nơi. | Hỗ trợ hết mình trong mọi hoàn cảnh, cô là "người bạn đồng hành" tin cậy cho những kế hoạch của chúng em. |
+| 10 | Cô Phi Hải Yến | Hậu phương vững chắc | "Cánh tay phải" đắc lực, thầm lặng cống hiến vì sự phát triển chung của đại gia đình Khoa. | Nét hiền hậu và sự chu đáo, luôn đồng hành và gỡ rối mọi khó khăn cho sinh viên một cách tận tình. |
+| 11 | Cô Nguyễn Hương Anh | Gần gũi mà tinh tế | Phong cách trẻ trung, xinh đẹp và luôn bắt kịp hơi thở của thế hệ GenZ năng động. | Sự chăm sóc tận tâm của cô giúp mỗi sinh viên luôn cảm thấy được thấu hiểu và sẻ chia. |
+| 12 | Cô Đào Thu Hà | Tươi mới mỗi ngày | Nét xinh đẹp rạng ngời kết hợp cùng tâm hồn yêu nghề sâu sắc và chân thành. | Sự nhiệt tình lan tỏa, cô luôn sát cánh cùng sinh viên trong mọi hoạt động học tập và phong trào. |
+| 13 | Cô Phạm Vũ Hà Thanh | Vẻ đẹp không tuổi | Vẻ đẹp quý phái, sang trọng hòa quyện cùng nụ cười rạng rỡ đầy cuốn hút. | Nhiệt huyết cháy bỏng ẩn sau phong thái điềm đạm, cô luôn truyền cảm hứng mạnh mẽ đến mọi thế hệ. |
+| 14 | Đỗ Huyền Vy | Làn gió mới | “GenZ” tiêu biểu với tinh thần năng động và sự sáng tạo không giới hạn. | Nụ cười rạng rỡ và sự nhiệt huyết trẻ tuổi luôn mang đến luồng gió mới, đầy sức sống cho Khoa mình. |

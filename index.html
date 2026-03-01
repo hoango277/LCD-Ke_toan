@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp chúc mừng 8/3 - Khoa TCKT1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff8a9c', // Hồng
+                        secondary: '#ff4b68', // Đỏ hồng
+                        accent: '#ffb3c1', // Hồng nhạt
+                        bgLight: '#fff0f3', // Be/Trắng cho background card
+                    },
+                    fontFamily: {
+                        dancing: ['"Dancing Script"', 'cursive'],
+                        quicksand: ['"Quicksand"', 'sans-serif'],
+                        inter: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Inter:wght@300;400;500;600&family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body
+    class="bg-gray-100 font-quicksand text-gray-800 overflow-hidden text-center relative selection:bg-primary selection:text-white">
+
+    <!-- Global Background -->
+    <div id="global-bg" class="global-bg"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main id="app-container"
+        class="w-full max-w-[500px] h-[100dvh] mx-auto bg-white/30 backdrop-blur-sm relative shadow-2xl overflow-hidden shadow-primary/20 flex flex-col items-center">
+
+        <!-- Lớp phủ mờ xíu để dễ đọc chữ -->
+        <div class="absolute inset-0 bg-black/30 z-0"></div>
+
+        <!-- PAGE 1: LANDING PAGE LYRICS SCROLL -->
+        <section id="page-1"
+            class="page-section active flex flex-col justify-center items-center p-6 h-full relative z-10 w-full transition-opacity duration-1000">
+            <!-- Lyrics container -->
+            <div id="lyrics-container"
+                class="h-[60%] w-full overflow-hidden flex flex-col items-center justify-center relative mask-image-gradient mt-10">
+                <div id="lyrics-content"
+                    class="text-primary text-xl md:text-3xl font-dancing font-bold leading-relaxed tracking-wider transition-transform duration-1000 ease-out transform translate-y-full px-3 text-center text-shadow-glow">
+                    <!-- Text will be injected by JS -->
+                </div>
+            </div>
+
+            <!-- Scroll instruction -->
+            <div id="scroll-instruction"
+                class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white opacity-0 transition-opacity duration-1000">
+                <span class="text-sm font-light mb-2 tracking-widest uppercase">Trượt xuống</span>
+                <i class="fa-solid fa-chevron-down text-2xl animate-bounce text-pink-300"></i>
+            </div>
+        </section>
+
+        <!-- PAGE 2: WELCOME (FIREWORKS SIMULATE & HI!) -->
+        <section id="page-2"
+            class="page-section hidden flex flex-col justify-center items-center p-6 h-full relative z-10 w-full">
+            <div class="bg-white/95 border-2 border-primary/20 backdrop-blur-md rounded-3xl p-8 shadow-[0_10px_40px_-10px_var(--tw-shadow-color)] shadow-primary/50 w-[95%] max-w-[400px] transform transition-all duration-700 scale-95 opacity-0 text-center flex flex-col items-center"
+                id="welcome-card">
+                <i class="fa-solid fa-gift text-5xl text-primary mb-4 animate-bounce"></i>
+                <p
+                    class="text-2xl md:text-3xl font-dancing font-bold text-gray-800 border-b-2 border-secondary/20 pb-6 mb-6 leading-relaxed">
+                    Chào mừng cô đã tới xứ sở của LCĐ – nơi những nụ cười tỏa nắng và những lời chúc được dệt từ trái
+                    tim
+                </p>
+                <button id="btn-to-page3"
+                    class="btn-primary w-full max-w-[200px] text-lg uppercase tracking-wider font-bold">
+                    Tiếp tục
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 3: FORM SELECT -->
+        <section id="page-3"
+            class="page-section hidden flex flex-col justify-center items-center p-6 h-full relative z-10 w-full">
+            <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-xl w-[90%] flex flex-col gap-6 transform transition-all duration-700 translate-y-10 opacity-0"
+                id="form-card">
+                <h2 class="text-3xl font-dancing font-bold text-secondary mb-2">Thông tin</h2>
+
+                <!-- Image upload/avatar picker -->
+                <div class="flex flex-col items-center gap-3">
+                    <label for="image-upload" class="cursor-pointer group relative">
+                        <div id="avatar-preview"
+                            class="w-32 h-32 rounded-full border-4 border-primary/50 flex items-center justify-center overflow-hidden bg-gray-50 shadow-inner transition-all group-hover:border-secondary">
+                            <i
+                                class="fa-solid fa-camera text-4xl text-gray-300 group-hover:text-primary transition-colors"></i>
+                            <img id="avatar-img" class="w-full h-full object-cover hidden" alt="Avatar">
+                        </div>
+                        <div
+                            class="absolute -bottom-2 -right-2 bg-secondary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </label>
+                    <span class="text-sm font-medium text-gray-500">Vui lòng chọn ảnh</span>
+                    <input type="file" id="image-upload" accept="image/*" class="hidden">
+                </div>
+
+                <!-- Select Teacher Name -->
+                <div class="w-full text-left">
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Vui lòng chọn tên</label>
+                    <div class="relative">
+                        <select id="teacher-select"
+                            class="w-full appearance-none bg-white border-2 border-primary/30 text-gray-700 py-3 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all shadow-sm">
+                            <option value="">Vui lòng chọn tên cô</option>
+                            <!-- Options injected by JS -->
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-secondary">
+                            <i class="fa-solid fa-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button id="btn-to-page4"
+                        class="btn-primary w-full text-xl font-bold py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        disabled>
+                        Hoàn thành
+                    </button>
+                    <p id="form-error" class="text-red-500 hidden text-sm mt-2 font-medium">Vui lòng chọn đầy đủ ảnh và
+                        tên!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: GALLERY (3 IMAGES) -->
+        <section id="page-4"
+            class="page-section hidden flex flex-col h-full relative z-10 w-full overflow-y-auto overflow-x-hidden custom-scrollbar bg-white/90">
+            <div class="p-6 pb-24 flex flex-col gap-8 opacity-0 transform translate-x-10 transition-all duration-700"
+                id="gallery-container">
+
+                <h2 id="gallery-title"
+                    class="text-2xl font-bold text-secondary uppercase tracking-wide mt-4 border-b-2 border-primary/30 pb-2">
+                    ĐẶNG THỊ VIỆT ĐỨC - ĐẤNG TỐI CAO</h2>
+
+                <!-- Focus Image 1 Landscape -->
+                <div
+                    class="w-full rounded-xl overflow-hidden shadow-lg border-4 border-white rotate-1 hover:rotate-0 transition-transform bg-gray-100 flex items-center justify-center min-h-[220px]">
+                    <img id="img-1" src="" alt="Main Photo" class="w-full h-auto object-contain max-h-[300px]">
+                </div>
+
+                <!-- Section 2: Image Left, Text Right -->
+                <div class="flex flex-row items-center gap-4">
+                    <div
+                        class="w-1/2 rounded-xl overflow-hidden shadow-md border-2 border-white -rotate-2 hover:rotate-1 transition-transform bg-gray-100 min-h-[160px] flex items-center justify-center">
+                        <img id="img-2" src="" alt="Photo 2" class="w-full h-auto object-contain max-h-[200px]">
+                    </div>
+                    <div class="w-1/2 text-left">
+                        <p class="text-gray-700 italic font-medium leading-relaxed" id="text-1">"Nụ cười rạng rỡ như ánh
+                            mai..."</p>
+                    </div>
+                </div>
+
+                <!-- Section 3: Text Left, Image Right -->
+                <div class="flex flex-row items-center gap-4">
+                    <div class="w-1/2 text-right">
+                        <p class="text-gray-700 italic font-medium leading-relaxed" id="text-2">"...và tình yêu nghề tỏa
+                            sáng khắp nơi."</p>
+                    </div>
+                    <div
+                        class="w-1/2 rounded-xl overflow-hidden shadow-md border-2 border-white rotate-2 hover:-rotate-1 transition-transform bg-gray-100 min-h-[160px] flex items-center justify-center">
+                        <img id="img-3" src="" alt="Photo 3" class="w-full h-auto object-contain max-h-[200px]">
+                    </div>
+                </div>
+
+                <!-- Mystery Gift Box -->
+                <div class="flex flex-col items-center mt-10 relative">
+                    <div
+                        class="absolute -top-10 -left-6 text-secondary text-5xl animate-pulse opacity-80 rotate-[135deg]">
+                        <i class="fa-solid fa-arrow-down"></i>
+                    </div>
+                    <div
+                        class="absolute -top-10 -right-6 text-secondary text-5xl animate-pulse opacity-80 rotate-[-135deg]">
+                        <i class="fa-solid fa-arrow-down"></i>
+                    </div>
+
+                    <button id="btn-to-page5"
+                        class="w-full group btn-primary text-xl font-bold py-4 px-6 flex items-center justify-center gap-4 transform transition-all overflow-hidden relative">
+                        <!-- Gift Icon -->
+                        <div
+                            class="w-12 h-12 absolute left-2 bottom-0 transform group-hover:-translate-y-2 transition-transform">
+                            <span class="text-4xl">🎁</span>
+                        </div>
+                        <span class="z-10 relative ml-8">Hộp quà bí ẩn</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 5: GREETING CARD (THIỆP MÙNG 8/3) -->
+        <section id="page-5"
+            class="page-section hidden flex flex-col justify-start items-center h-full relative z-10 w-full overflow-y-auto overflow-x-hidden custom-scrollbar py-6 pb-24">
+
+            <!-- Envelope Top Illustration -->
+            <div class="mb-4 animate-bounce opacity-80 p-2 scale-90">
+                <i class="fa-solid fa-envelope-open-text text-6xl text-pink-300 drop-shadow-md"></i>
+                <div class="flex justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-heart text-secondary text-xl"></i>
+                    <i class="fa-solid fa-heart text-primary text-2xl"></i>
+                    <i class="fa-solid fa-heart text-secondary text-xl"></i>
+                </div>
+            </div>
+
+            <!-- The Card Canvas (To be downloaded) -->
+            <div id="greeting-card"
+                class="w-[95%] max-w-[600px] bg-bgLight rounded-3xl p-6 shadow-2xl border-4 border-white relative overflow-hidden flex flex-row items-center gap-6 mt-4 min-h-[350px]">
+
+                <!-- Decor Blobs -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-bl-full -z-0"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-accent/30 rounded-tr-full -z-0"></div>
+
+                <!-- Cột trái: Ảnh & Tên -->
+                <div
+                    class="flex flex-col items-center justify-center w-[40%] relative z-10 shrink-0 border-r-2 border-primary/20 pr-4">
+                    <h1
+                        class="text-sm md:text-base font-bold tracking-widest text-secondary text-center uppercase mb-3 drop-shadow-sm">
+                        Chúc Mừng <br><span class="text-xl">8/3</span></h1>
+
+                    <!-- Avatar on card (Draggable & Zoomable) -->
+                    <div class="relative mb-3 group w-full flex flex-col items-center">
+                        <div id="avatar-container"
+                            class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-secondary overflow-hidden shadow-lg bg-white p-1 relative cursor-move touch-none">
+                            <img id="card-avatar"
+                                class="absolute top-0 left-0 w-full h-full object-cover transform-gpu pointer-events-none"
+                                src="" alt="Avatar" style="transform-origin: center center;">
+                        </div>
+                        <!-- Bow deco -->
+                        <div
+                            class="absolute top-[80px] md:top-[110px] left-1/2 transform -translate-x-1/2 text-2xl text-secondary z-20 pointer-events-none">
+                            🎀</div>
+
+                        <!-- Zoom Slider -->
+                        <div class="flex items-center gap-2 mt-4 text-secondary/70 w-full max-w-[150px]">
+                            <i class="fa-solid fa-magnifying-glass-minus text-xs"></i>
+                            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.1" value="1"
+                                class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-secondary">
+                            <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
+                        </div>
+                        <span class="text-[10px] text-gray-400 mt-1 italic">Kéo ảnh & trượt để căn chỉnh</span>
+                    </div>
+
+                    <h2 id="card-name"
+                        class="text-xs md:text-base font-bold text-secondary uppercase w-full text-center mt-2 px-1">TÊN
+                        CÔ GIÁO</h2>
+                </div>
+
+                <!-- Cột phải: Lời chúc & Chữ ký -->
+                <div class="flex flex-col justify-between h-full w-[60%] relative z-10 py-2">
+                    <div
+                        class="bg-white/70 p-4 shrink rounded-xl text-[13px] md:text-[15px] font-medium italic text-gray-700 leading-relaxed shadow-sm border border-white/50 h-full flex items-center justify-center">
+                        <p id="card-wish" class="text-center text-pretty">"Lời chúc đặc biệt..."</p>
+                    </div>
+
+                    <div class="w-full text-right mt-3 shrink-0">
+                        <p class="font-dancing text-lg md:text-xl text-secondary font-bold">From LCD with Love ❤️</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-4 w-[90%] mt-8 opacity-0 transform translate-y-8 transition-all duration-700"
+                id="card-actions">
+                <label for="edit-image-upload" id="btn-edit"
+                    class="btn-primary w-full py-3 text-lg font-bold flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-camera-rotate"></i> Đổi ảnh khác
+                    <input type="file" id="edit-image-upload" accept="image/*" class="hidden">
+                </label>
+                <button id="btn-download"
+                    class="bg-rose-500 hover:bg-rose-600 active:scale-95 text-white shadow-rose-200/50 rounded-full w-full py-3 text-lg font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all h-[52px]">
+                    <i class="fa-solid fa-download"></i> Tải xuống
+                </button>
+            </div>
+
+            <div id="toast"
+                class="fixed top-10 transform -translate-y-full opacity-0 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center gap-2">
+                <i class="fa-solid fa-check-circle"></i> <span>Tải xuống thành công!</span>
+            </div>
+        </section>
+
+        <!-- Dynamic Footer (Fixed bottom) -->
+        <footer class="absolute bottom-2 left-0 right-0 text-center z-50 pointer-events-none pb-2">
+            <p class="text-[11px] md:text-xs text-white drop-shadow-md opacity-80 font-medium">From Hòa Ngô - Tôi Yêu
+                PTIT with Love</p>
+        </footer>
+
+    </main>
+
+    <!-- html2canvas lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
