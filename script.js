@@ -237,21 +237,13 @@ function initLyricsAnimation() {
     // Create elements for all lines first
     const lineElements = textLines.map(line => {
         const p = document.createElement('p');
-        p.className = 'mb-1 md:mb-2 opacity-100 min-h-[30px] md:min-h-[40px]';
+        p.className = 'mb-1 md:mb-2 opacity-100 min-h-[30px] md:min-h-[40px] w-full max-w-[90%] md:max-w-none';
+        p.style.textWrap = 'balance';
         lyricsContent.appendChild(p);
         return p;
     });
 
     const scrollInstruction = document.getElementById('scroll-instruction');
-
-    function typeWriter(text, element, i, callback) {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            setTimeout(() => typeWriter(text, element, i + 1, callback), 50); // Speed of typing
-        } else if (callback) {
-            setTimeout(callback, 500); // Pause at end of line
-        }
-    }
 
     function showLine() {
         if (currentLineIdx < textLines.length) {
@@ -261,14 +253,35 @@ function initLyricsAnimation() {
             // Cuộn lyrics block lên từ từ để dồn chữ
             lyricsContent.style.transform = `translateY(0)`; // Move up container
 
-            // Xóa nội dung trước khi type
+            // Xóa nội dung trước đó
             currentLineEl.innerHTML = '';
 
-            // Start typing
-            typeWriter(textToType, currentLineEl, 0, () => {
-                currentLineIdx++;
-                showLine();
-            });
+            // Trick: Render toàn bộ text dưới dạng span bị ẩn (opacity 0) 
+            // Điều này giúp trình duyệt có đủ dữ liệu để tính toán text-wrap: balance từ ban đầu thay vì nhảy chữ liên tục khi gõ thêm.
+            const spans = [];
+            for (let char of textToType) {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.opacity = '0';
+                currentLineEl.appendChild(span);
+                spans.push(span);
+            }
+
+            // Function hiện dần chữ
+            function revealChar(i) {
+                if (i < spans.length) {
+                    spans[i].style.opacity = '1';
+                    setTimeout(() => revealChar(i + 1), 50); // Tốc độ gõ
+                } else {
+                    setTimeout(() => {
+                        currentLineIdx++;
+                        showLine();
+                    }, 500); // Tạm nghỉ khi hết dòng
+                }
+            }
+
+            // Bắt đầu gõ
+            revealChar(0);
 
         } else {
             // Hiển thị nút trượt xuống
@@ -509,19 +522,30 @@ function initButtonInteractions() {
     document.getElementById('btn-download').addEventListener('click', () => {
         const cardArea = document.getElementById('greeting-card');
 
-        // Hide slider and hints temporarily for a clean capture
-        const zoomControls = cardArea.querySelectorAll('.fa-magnifying-glass-minus, .fa-magnifying-glass-plus, input[type="range"], span.italic');
-        zoomControls.forEach(el => el.style.opacity = '0');
-
         html2canvas(cardArea, {
             backgroundColor: null,
-            scale: 2, // higher res
+            scale: 3, // higher res for sharper image
             useCORS: true,
             logging: false,
-        }).then(canvas => {
-            // Restore visibility
-            zoomControls.forEach(el => el.style.opacity = '1');
+            onclone: (clonedDoc) => {
+                const clonedCard = clonedDoc.getElementById('greeting-card');
 
+                // Ẩn hoàn toàn các control zoom/slider trong bản clone
+                const zoomElements = clonedCard.querySelectorAll('.fa-magnifying-glass-minus, .fa-magnifying-glass-plus, input[type="range"]');
+                zoomElements.forEach(el => el.style.display = 'none');
+
+                // Ẩn text hướng dẫn "Kéo ảnh & trượt..."
+                const hints = clonedCard.querySelectorAll('span.italic');
+                hints.forEach(el => el.style.display = 'none');
+
+                // Đảm bảo ảnh avatar giữ đúng transform
+                const clonedAvatar = clonedDoc.getElementById('card-avatar');
+                if (clonedAvatar) {
+                    clonedAvatar.style.transform = `translate3d(${state.avatarTransform.x}px, ${state.avatarTransform.y}px, 0) scale(${state.avatarTransform.scale})`;
+                    clonedAvatar.style.transformOrigin = 'center center';
+                }
+            }
+        }).then(canvas => {
             // Convert and download
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
