@@ -520,53 +520,117 @@ function initButtonInteractions() {
     });
 
     // Page 5: Download
-    document.getElementById('btn-download').addEventListener('click', () => {
+    document.getElementById('btn-download').addEventListener('click', async () => {
         const cardArea = document.getElementById('greeting-card');
+        const avatarContainer = document.getElementById('avatar-container');
+        const avatarImg = document.getElementById('card-avatar');
 
-        // Lưu lại kích thước thực tế hiển thị trên màn hình
+        // === BƯỚC 1: Bake avatar lên canvas với transform user đã chỉnh ===
+        const containerW = avatarContainer.offsetWidth;
+        const containerH = avatarContainer.offsetHeight;
+
+        const offscreen = document.createElement('canvas');
+        offscreen.width = containerW * 2;
+        offscreen.height = containerH * 2;
+        const offCtx = offscreen.getContext('2d');
+        offCtx.scale(2, 2);
+
+        // Clip tròn
+        offCtx.beginPath();
+        offCtx.arc(containerW / 2, containerH / 2, containerW / 2, 0, Math.PI * 2);
+        offCtx.closePath();
+        offCtx.clip();
+
+        // Áp transform user đã chỉnh
+        const tx = state.avatarTransform.x;
+        const ty = state.avatarTransform.y;
+        const sc = state.avatarTransform.scale;
+
+        offCtx.translate(containerW / 2 + tx, containerH / 2 + ty);
+        offCtx.scale(sc, sc);
+        offCtx.translate(-containerW / 2, -containerH / 2);
+
+        // Tái tạo object-fit: cover — giữ tỷ lệ ảnh gốc, crop phần thừa
+        const natW = avatarImg.naturalWidth || containerW;
+        const natH = avatarImg.naturalHeight || containerH;
+        const imgRatio = natW / natH;
+        const boxRatio = containerW / containerH;
+
+        let drawW, drawH, drawX, drawY;
+        if (imgRatio > boxRatio) {
+            // Ảnh rộng hơn container → scale theo chiều cao, crop chiều ngang
+            drawH = containerH;
+            drawW = containerH * imgRatio;
+            drawX = (containerW - drawW) / 2;
+            drawY = 0;
+        } else {
+            // Ảnh cao hơn container → scale theo chiều rộng, crop chiều dọc
+            drawW = containerW;
+            drawH = containerW / imgRatio;
+            drawX = 0;
+            drawY = (containerH - drawH) / 2;
+        }
+
+        offCtx.drawImage(avatarImg, drawX, drawY, drawW, drawH);
+
+        const bakedDataURL = offscreen.toDataURL('image/png');
+
+        // === BƯỚC 2: Lưu trạng thái gốc ===
+        const originalSrc = avatarImg.src;
+        const originalTransform = avatarImg.style.transform;
+        const originalPosition = avatarImg.style.position;
+        const originalObjFit = avatarImg.style.objectFit;
+
+        // Các elements cần ẩn
+        const zoomSliderWrap = avatarContainer.parentElement.querySelector('.flex.items-center.gap-1');
+        const hintText = avatarContainer.parentElement.querySelector('span.italic');
+
+        // === BƯỚC 3: Thay đổi DOM gốc tạm thời ===
+        avatarImg.src = bakedDataURL;
+        avatarImg.style.transform = 'none';
+        avatarImg.style.position = 'relative';
+        avatarImg.style.objectFit = 'contain';
+        avatarImg.style.borderRadius = '50%';
+
+        if (zoomSliderWrap) zoomSliderWrap.style.display = 'none';
+        if (hintText) hintText.style.display = 'none';
+
+        // Đợi 1 frame để browser render xong
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        // === BƯỚC 4: Chụp ảnh ===
         const actualWidth = cardArea.offsetWidth;
         const actualHeight = cardArea.offsetHeight;
 
-        html2canvas(cardArea, {
-            backgroundColor: '#fff0f3',
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            width: actualWidth,
-            height: actualHeight,
-            onclone: (clonedDoc) => {
-                const clonedCard = clonedDoc.getElementById('greeting-card');
+        try {
+            const canvas = await html2canvas(cardArea, {
+                backgroundColor: '#fff0f3',
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                width: actualWidth,
+                height: actualHeight,
+            });
 
-                // Lock kích thước chính xác bằng pixel
-                clonedCard.style.width = actualWidth + 'px';
-                clonedCard.style.height = actualHeight + 'px';
-                clonedCard.style.maxWidth = 'none';
-                clonedCard.style.minWidth = 'none';
-
-                // Ẩn hoàn toàn các control zoom/slider
-                const zoomElements = clonedCard.querySelectorAll('.fa-magnifying-glass-minus, .fa-magnifying-glass-plus, input[type="range"]');
-                zoomElements.forEach(el => el.style.display = 'none');
-
-                // Ẩn text hướng dẫn
-                const hints = clonedCard.querySelectorAll('span.italic');
-                hints.forEach(el => el.style.display = 'none');
-
-                // Đảm bảo ảnh avatar giữ đúng transform đã căn chỉnh
-                const clonedAvatar = clonedDoc.getElementById('card-avatar');
-                if (clonedAvatar) {
-                    clonedAvatar.style.transform = `translate3d(${state.avatarTransform.x}px, ${state.avatarTransform.y}px, 0) scale(${state.avatarTransform.scale})`;
-                    clonedAvatar.style.transformOrigin = 'center center';
-                }
-            }
-        }).then(canvas => {
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.download = `Thiep_8_3_${TEACHERS_DATA.find(t => t.id === state.selectedTeacherId)?.name || 'KhoaTCKT'}.png`;
             link.href = image;
             link.click();
-
             showToast();
-        });
+        } catch (err) {
+            console.error('Download error:', err);
+        }
+
+        // === BƯỚC 5: Khôi phục DOM gốc ===
+        avatarImg.src = originalSrc;
+        avatarImg.style.transform = originalTransform;
+        avatarImg.style.position = originalPosition;
+        avatarImg.style.objectFit = originalObjFit;
+        avatarImg.style.borderRadius = '';
+
+        if (zoomSliderWrap) zoomSliderWrap.style.display = '';
+        if (hintText) hintText.style.display = '';
     });
 }
 
