@@ -202,6 +202,7 @@ function goToPage(pageNum) {
     if (pageNum === 2) {
         setTimeout(() => {
             document.getElementById('welcome-card').classList.add('fade-in-up');
+            startFireworks();
         }, 100);
     } else if (pageNum === 3) {
         setTimeout(() => {
@@ -522,23 +523,35 @@ function initButtonInteractions() {
     document.getElementById('btn-download').addEventListener('click', () => {
         const cardArea = document.getElementById('greeting-card');
 
+        // Lưu lại kích thước thực tế hiển thị trên màn hình
+        const actualWidth = cardArea.offsetWidth;
+        const actualHeight = cardArea.offsetHeight;
+
         html2canvas(cardArea, {
-            backgroundColor: null,
-            scale: 3, // higher res for sharper image
+            backgroundColor: '#fff0f3',
+            scale: 2,
             useCORS: true,
             logging: false,
+            width: actualWidth,
+            height: actualHeight,
             onclone: (clonedDoc) => {
                 const clonedCard = clonedDoc.getElementById('greeting-card');
 
-                // Ẩn hoàn toàn các control zoom/slider trong bản clone
+                // Lock kích thước chính xác bằng pixel
+                clonedCard.style.width = actualWidth + 'px';
+                clonedCard.style.height = actualHeight + 'px';
+                clonedCard.style.maxWidth = 'none';
+                clonedCard.style.minWidth = 'none';
+
+                // Ẩn hoàn toàn các control zoom/slider
                 const zoomElements = clonedCard.querySelectorAll('.fa-magnifying-glass-minus, .fa-magnifying-glass-plus, input[type="range"]');
                 zoomElements.forEach(el => el.style.display = 'none');
 
-                // Ẩn text hướng dẫn "Kéo ảnh & trượt..."
+                // Ẩn text hướng dẫn
                 const hints = clonedCard.querySelectorAll('span.italic');
                 hints.forEach(el => el.style.display = 'none');
 
-                // Đảm bảo ảnh avatar giữ đúng transform
+                // Đảm bảo ảnh avatar giữ đúng transform đã căn chỉnh
                 const clonedAvatar = clonedDoc.getElementById('card-avatar');
                 if (clonedAvatar) {
                     clonedAvatar.style.transform = `translate3d(${state.avatarTransform.x}px, ${state.avatarTransform.y}px, 0) scale(${state.avatarTransform.scale})`;
@@ -546,7 +559,6 @@ function initButtonInteractions() {
                 }
             }
         }).then(canvas => {
-            // Convert and download
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.download = `Thiep_8_3_${TEACHERS_DATA.find(t => t.id === state.selectedTeacherId)?.name || 'KhoaTCKT'}.png`;
@@ -566,4 +578,136 @@ function showToast() {
         toast.classList.remove('translate-y-0', 'opacity-100');
         toast.classList.add('-translate-y-full', 'opacity-0');
     }, 3000);
+}
+
+// ------ FIREWORKS ANIMATION -------
+function startFireworks() {
+    const canvas = document.getElementById('fireworks-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const parent = canvas.parentElement;
+
+    // Set canvas size to match parent
+    canvas.width = parent.offsetWidth;
+    canvas.height = parent.offsetHeight;
+
+    const particles = [];
+    const rockets = [];
+    const colors = ['#FF6B9D', '#C44569', '#FF8E53', '#FFC93C', '#FF69B4', '#FFB6C1', '#FF1493', '#FF4081', '#E91E63', '#F48FB1'];
+
+    let animationId;
+    let startTime = Date.now();
+    const DURATION = 5000; // 5 giây pháo hoa
+
+    // Tạo 1 quả rocket
+    function launchRocket() {
+        rockets.push({
+            x: Math.random() * canvas.width * 0.8 + canvas.width * 0.1,
+            y: canvas.height,
+            targetY: Math.random() * canvas.height * 0.4 + canvas.height * 0.1,
+            speed: 4 + Math.random() * 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            trail: []
+        });
+    }
+
+    // Tạo explosion particles
+    function explode(x, y) {
+        const particleCount = 40 + Math.floor(Math.random() * 30);
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (Math.PI * 2 / particleCount) * i;
+            const speed = 1 + Math.random() * 4;
+            particles.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 1,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: 1.5 + Math.random() * 2,
+                decay: 0.012 + Math.random() * 0.015,
+                gravity: 0.03
+            });
+        }
+    }
+
+    function animate() {
+        const elapsed = Date.now() - startTime;
+
+        // Mờ dần background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Bắn rocket mới ngẫu nhiên
+        if (elapsed < DURATION - 1000 && Math.random() < 0.04) {
+            launchRocket();
+        }
+
+        // Update rockets
+        for (let i = rockets.length - 1; i >= 0; i--) {
+            const r = rockets[i];
+            r.trail.push({ x: r.x, y: r.y });
+            if (r.trail.length > 8) r.trail.shift();
+
+            r.y -= r.speed;
+
+            // Vẽ trail
+            r.trail.forEach((t, idx) => {
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${idx / r.trail.length * 0.7})`;
+                ctx.fill();
+            });
+
+            // Vẽ rocket
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = r.color;
+            ctx.fill();
+
+            // Nổ khi đến đích
+            if (r.y <= r.targetY) {
+                explode(r.x, r.y);
+                rockets.splice(i, 1);
+            }
+        }
+
+        // Update particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += p.gravity;
+            p.vx *= 0.99;
+            p.alpha -= p.decay;
+
+            if (p.alpha <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        // Dừng khi hết thời gian và hết particles
+        if (elapsed > DURATION && particles.length === 0 && rockets.length === 0) {
+            cancelAnimationFrame(animationId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // Bắn ngay 3 quả đầu tiên
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    launchRocket();
+    setTimeout(launchRocket, 300);
+    setTimeout(launchRocket, 600);
+    animate();
 }

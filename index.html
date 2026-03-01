@@ -74,7 +74,10 @@
         <!-- PAGE 2: WELCOME (FIREWORKS SIMULATE & HI!) -->
         <section id="page-2"
             class="page-section hidden flex flex-col justify-center items-center p-6 h-full relative z-10 w-full">
-            <div class="bg-white/95 border-2 border-primary/20 backdrop-blur-md rounded-3xl p-8 shadow-[0_10px_40px_-10px_var(--tw-shadow-color)] shadow-primary/50 w-[95%] max-w-[400px] transform transition-all duration-700 scale-95 opacity-0 text-center flex flex-col items-center"
+            <!-- Canvas pháo hoa -->
+            <canvas id="fireworks-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+            <div class="bg-white/95 border-2 border-primary/20 backdrop-blur-md rounded-3xl p-8 shadow-[0_10px_40px_-10px_var(--tw-shadow-color)] shadow-primary/50 w-[95%] max-w-[400px] transform transition-all duration-700 scale-95 opacity-0 text-center flex flex-col items-center relative z-10"
                 id="welcome-card">
                 <i class="fa-solid fa-gift text-5xl text-primary mb-4 animate-bounce"></i>
                 <p
@@ -222,56 +225,64 @@
 
             <!-- The Card Canvas (To be downloaded) -->
             <div id="greeting-card"
-                class="w-[95%] max-w-[600px] bg-bgLight rounded-3xl p-6 shadow-2xl border-4 border-white relative overflow-hidden flex flex-row items-stretch gap-5 mt-4">
+                class="w-[95%] max-w-[600px] bg-bgLight rounded-3xl shadow-2xl border-4 border-white relative mt-4">
 
-                <!-- Decor Blobs -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-bl-full -z-0"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-accent/30 rounded-tr-full -z-0"></div>
-
-                <!-- Cột trái: Ảnh & Tên -->
-                <div
-                    class="flex flex-col items-center justify-center w-[40%] relative z-10 shrink-0 border-r-2 border-primary/20 pr-4">
-                    <h1
-                        class="text-sm md:text-base font-bold tracking-widest text-secondary text-center uppercase mb-3 drop-shadow-sm">
-                        Chúc Mừng <br><span class="text-xl">8/3</span></h1>
-
-                    <!-- Avatar on card (Draggable & Zoomable) -->
-                    <div class="relative mb-3 group w-full flex flex-col items-center">
-                        <div id="avatar-container"
-                            class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-secondary overflow-hidden shadow-lg bg-white p-1 relative cursor-move touch-none">
-                            <img id="card-avatar"
-                                class="absolute top-0 left-0 w-full h-full object-cover transform-gpu pointer-events-none"
-                                src="" alt="Avatar" style="transform-origin: center center;">
-                        </div>
-                        <!-- Bow deco -->
-                        <div
-                            class="absolute top-[80px] md:top-[110px] left-1/2 transform -translate-x-1/2 text-2xl text-secondary z-20 pointer-events-none">
-                            🎀</div>
-
-                        <!-- Zoom Slider -->
-                        <div class="flex items-center gap-2 mt-4 text-secondary/70 w-full max-w-[150px]">
-                            <i class="fa-solid fa-magnifying-glass-minus text-xs"></i>
-                            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.1" value="1"
-                                class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-secondary">
-                            <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
-                        </div>
-                        <span class="text-[10px] text-gray-400 mt-1 italic">Kéo ảnh & trượt để căn chỉnh</span>
-                    </div>
-
-                    <h2 id="card-name"
-                        class="text-xs md:text-base font-bold text-secondary uppercase w-full text-center mt-2 px-1">TÊN
-                        CÔ GIÁO</h2>
+                <!-- Decor Blobs (nằm trong wrapper overflow-hidden riêng) -->
+                <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-bl-full"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-accent/30 rounded-tr-full"></div>
                 </div>
 
-                <!-- Cột phải: Lời chúc & Chữ ký -->
-                <div class="flex flex-col justify-between w-[60%] relative z-10 py-2">
+                <!-- Nội dung chính -->
+                <div class="flex flex-row items-stretch gap-4 p-5 relative z-10">
+
+                    <!-- Cột trái: Ảnh & Tên (cố định chiều rộng) -->
                     <div
-                        class="bg-white/70 p-3 rounded-xl text-[11px] md:text-[13px] font-medium italic text-gray-700 leading-relaxed shadow-sm border border-white/50 flex-1 flex items-center justify-center">
-                        <p id="card-wish" class="text-center text-pretty">"Lời chúc đặc biệt..."</p>
+                        class="flex flex-col items-center justify-center w-[130px] md:w-[160px] shrink-0 border-r-2 border-primary/20 pr-3">
+                        <h1
+                            class="text-xs md:text-sm font-bold tracking-widest text-secondary text-center uppercase mb-2 drop-shadow-sm">
+                            Chúc Mừng <br><span class="text-lg md:text-xl">8/3</span></h1>
+
+                        <!-- Avatar on card (Draggable & Zoomable) -->
+                        <div class="relative mb-2 w-full flex flex-col items-center">
+                            <div id="avatar-container"
+                                class="w-20 h-20 md:w-28 md:h-28 rounded-full border-4 border-secondary overflow-hidden shadow-lg bg-white p-1 relative cursor-move touch-none">
+                                <img id="card-avatar"
+                                    class="absolute top-0 left-0 w-full h-full object-cover transform-gpu pointer-events-none"
+                                    src="" alt="Avatar" style="transform-origin: center center;">
+                            </div>
+                            <!-- Bow deco -->
+                            <div
+                                class="absolute top-[68px] md:top-[100px] left-1/2 transform -translate-x-1/2 text-xl text-secondary z-20 pointer-events-none">
+                                🎀</div>
+
+                            <!-- Zoom Slider -->
+                            <div class="flex items-center gap-1 mt-3 text-secondary/70 w-full max-w-[120px]">
+                                <i class="fa-solid fa-magnifying-glass-minus text-[8px]"></i>
+                                <input type="range" id="zoom-slider" min="0.5" max="3" step="0.1" value="1"
+                                    class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-secondary">
+                                <i class="fa-solid fa-magnifying-glass-plus text-[8px]"></i>
+                            </div>
+                            <span class="text-[9px] text-gray-400 mt-0.5 italic">Kéo ảnh & trượt để căn chỉnh</span>
+                        </div>
+
+                        <h2 id="card-name"
+                            class="text-[10px] md:text-xs font-bold text-secondary uppercase w-full text-center mt-1 px-0.5 leading-tight">
+                            TÊN CÔ GIÁO</h2>
                     </div>
 
-                    <div class="w-full text-right mt-3 shrink-0">
-                        <p class="font-dancing text-base md:text-lg text-secondary font-bold">From LCD with Love ❤️</p>
+                    <!-- Cột phải: Lời chúc & Chữ ký (tự co giãn) -->
+                    <div class="flex flex-col justify-between flex-1 min-w-0 py-1">
+                        <div
+                            class="bg-white/70 p-3 rounded-xl text-[10px] md:text-[12px] font-medium italic text-gray-700 leading-relaxed shadow-sm border border-white/50 flex-1 flex items-center justify-center">
+                            <p id="card-wish" class="text-center text-pretty break-words w-full">"Lời chúc đặc biệt..."
+                            </p>
+                        </div>
+
+                        <div class="w-full text-right mt-2 shrink-0">
+                            <p class="font-dancing text-sm md:text-base text-secondary font-bold">From LCD with Love ❤️
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
